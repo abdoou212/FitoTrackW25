@@ -52,13 +52,7 @@ public abstract class FitoTrackSettingsActivity extends PreferenceActivity {
     private void handleSettingsError(Exception e) {
         DialogUtils.showErrorDialog(this, e, R.string.error_title, R.string.error_message);
     }
-//    protected void showErrorDialog(Exception e, @StringRes int title, @StringRes int message) {
-//        new AlertDialog.Builder(this)
-//                .setTitle(title)
-//                .setMessage(getString(message) + "\n\n" + e.getMessage())
-//                .setPositiveButton(R.string.okay, null)
-//                .create().show();
-//    }
+
 
     /**
      * A preference value change listener that updates the preference's summary

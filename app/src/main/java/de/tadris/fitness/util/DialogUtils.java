@@ -21,7 +21,8 @@ package de.tadris.fitness.util;
 
 import android.app.AlertDialog;
 import android.content.Context;
-
+import androidx.appcompat.app.AlertDialog;
+import androidx.annotation.StringRes;
 import de.tadris.fitness.R;
 
 public class DialogUtils {
@@ -32,6 +33,15 @@ public class DialogUtils {
                 .setNegativeButton(R.string.cancel, null)
                 .setPositiveButton(R.string.delete, (dialog, which) -> deleter.deleteWorkout())
                 .create().show();
+    }
+
+    public static void showErrorDialog(Context context, Exception e, @StringRes int title, @StringRes int message) {
+        new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(context.getString(message) + "\n\n" + e.getMessage())
+                .setPositiveButton(android.R.string.ok, null)
+                .create()
+                .show();
     }
 
     public interface WorkoutDeleter{

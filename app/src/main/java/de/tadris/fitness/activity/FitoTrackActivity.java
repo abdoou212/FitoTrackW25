@@ -26,6 +26,8 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.TypedValue;
 
+import de.tadris.fitness.util.DialogUtils;
+
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.core.app.ActivityCompat;

@@ -47,10 +47,7 @@ import de.tadris.fitness.util.unit.UnitUtils;
 public class EnterWorkoutActivity extends InformationActivity implements SelectWorkoutTypeDialog.WorkoutTypeSelectListener, DatePickerFragment.DatePickerCallback, TimePickerFragment.TimePickerCallback, DurationPickerDialogFragment.DurationPickListener {
 
     WorkoutBuilder workoutBuilder = new WorkoutBuilder();
-    TextView typeTextView;
-    TextView dateTextView;
-    TextView timeTextView;
-    TextView durationTextView;
+    TextView typeTextView, dateTextView, timeTextView, durationTextView;
     EditText distanceEditText;
     EditText commentEditText;
 
@@ -60,7 +57,6 @@ public class EnterWorkoutActivity extends InformationActivity implements SelectW
         setContentView(R.layout.activity_enter_workout);
 
         initRoot();
-
         addTitle(getString(R.string.info));
         setupActionBar();
 
@@ -73,21 +69,17 @@ public class EnterWorkoutActivity extends InformationActivity implements SelectW
         distanceEditText.setSingleLine(true);
         distanceEditText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         distanceEditText.setOnEditorActionListener((v, actionId, event) -> {
-            // If the User clicks on the finish button on the keyboard, continue by showing the date selection
-            if ((actionId == EditorInfo.IME_ACTION_SEARCH ||
+            if (actionId == EditorInfo.IME_ACTION_SEARCH ||
                     actionId == EditorInfo.IME_ACTION_DONE ||
-                    (event != null && event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
-                    && (event == null || !event.isShiftPressed())) {
-                  showDateSelection();
-                  return true;
+                    (event != null && event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                if (event == null || !event.isShiftPressed()) {
+                    showDateSelection();
+                    return true;
+                }
             }
             return false;
         });
-
-
-
         addKeyValueLine(getString(R.string.workoutDistance), distanceEditText, UnitUtils.CHOSEN_SYSTEM.getLongDistanceUnit());
-
 
         KeyValueLine dateLine = addKeyValueLine(getString(R.string.workoutDate));
         dateLine.lineRoot.setOnClickListener(v -> showDateSelection());
@@ -127,7 +119,7 @@ public class EnterWorkoutActivity extends InformationActivity implements SelectW
             Toast.makeText(this, R.string.errorEnterValidDuration, Toast.LENGTH_LONG).show();
             return;
         }
-        WorkoutActivity.setSelectedWorkout(workoutBuilder.insertWorkout(this));
+        ShowWorkoutActivity.selectedWorkout = workoutBuilder.insertWorkout(this);
         startActivity(new Intent(this, ShowWorkoutActivity.class));
         finish();
     }
@@ -150,10 +142,14 @@ public class EnterWorkoutActivity extends InformationActivity implements SelectW
         distanceEditText.requestFocus();
     }
 
-    private void showDateSelection() {
+    private void showDatePicker() {
         DatePickerFragment fragment = new DatePickerFragment();
         fragment.callback = this;
         fragment.show(getFragmentManager(), "datePicker");
+    }
+
+    private void showDateSelection() {
+        showDatePicker();
     }
 
     @Override
@@ -194,34 +190,7 @@ public class EnterWorkoutActivity extends InformationActivity implements SelectW
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.enter_workout_menu, menu);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.actionEnterWorkoutAdd:
-                saveWorkout();
-                return true;
-            case android.R.id.home:
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void setupActionBar() {
-        if (getActionBar() != null) {
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-    }
-
-    @Override
-    void initRoot() {
-        root = findViewById(R.id.enterWorkoutRoot);
     }
 }

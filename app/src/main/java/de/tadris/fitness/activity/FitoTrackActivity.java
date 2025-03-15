@@ -32,6 +32,7 @@ import androidx.core.app.ActivityCompat;
 
 import de.tadris.fitness.Instance;
 import de.tadris.fitness.R;
+import de.tadris.fitness.util.DialogUtils;
 
 abstract public class FitoTrackActivity extends Activity {
 
@@ -47,12 +48,8 @@ abstract public class FitoTrackActivity extends Activity {
         return value.data;
     }
 
-    void showErrorDialog(Exception e, @StringRes int title, @StringRes int message) {
-        new AlertDialog.Builder(this)
-                .setTitle(title)
-                .setMessage(getString(message) + "\n\n" + e.getMessage())
-                .setPositiveButton(R.string.okay, null)
-                .create().show();
+    private void handleException(Exception e) {
+        DialogUtils.showErrorDialog(this, e, R.string.error_title, R.string.error_message);
     }
 
     protected void requestStoragePermissions() {
@@ -66,5 +63,12 @@ abstract public class FitoTrackActivity extends Activity {
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
+    protected void setupActionBar() {
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            // Show the Up button in the action bar.
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+    }
 
 }

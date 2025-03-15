@@ -109,15 +109,21 @@ public class SettingsActivity extends FitoTrackSettingsActivity {
     }
 
     private void showExportDialog() {
+        showDialog(R.string.exportData, R.string.exportDataSummary, R.string.backup, this::exportBackup);
+    }
+
+    private void showDialog(int titleRes, int messageRes, int positiveButtonRes, Runnable positiveAction) {
         if (!hasPermission()) {
             requestPermissions();
             return;
         }
         new AlertDialog.Builder(this)
-                .setTitle(R.string.exportData)
-                .setMessage(R.string.exportDataSummary)
+                .setTitle(titleRes)
+                .setMessage(messageRes)
                 .setNegativeButton(R.string.cancel, null)
-                .setPositiveButton(R.string.backup, (dialog, which) -> exportBackup()).create().show();
+                .setPositiveButton(positiveButtonRes, (dialog, which) -> positiveAction.run())
+                .create()
+                .show();
     }
 
     private void exportBackup(){
@@ -150,15 +156,7 @@ public class SettingsActivity extends FitoTrackSettingsActivity {
     }
 
     private void showImportDialog() {
-        if(!hasPermission()){
-            requestPermissions();
-            return;
-        }
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.importBackup)
-                .setMessage(R.string.importBackupMessage)
-                .setNegativeButton(R.string.cancel, null)
-                .setPositiveButton(R.string.restore, (dialog, which) -> importBackup()).create().show();
+        showDialog(R.string.importBackup, R.string.importBackupMessage, R.string.restore, this::importBackup);
     }
 
     private void requestPermissions() {

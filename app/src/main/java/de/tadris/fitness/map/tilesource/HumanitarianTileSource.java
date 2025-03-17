@@ -21,12 +21,31 @@ package de.tadris.fitness.map.tilesource;
 
 public class HumanitarianTileSource extends BaseTileSource {
 
-    public static final HumanitarianTileSource INSTANCE = new HumanitarianTileSource(
-            new String[]{"tile-a.openstreetmap.fr", "tile-b.openstreetmap.fr", "tile-c.openstreetmap.fr"},
-            443
-    );
+    public static final HumanitarianTileSource INSTANCE = new HumanitarianTileSource(new String[]{
+            "tile-a.openstreetmap.fr", "tile-b.openstreetmap.fr", "tile-c.openstreetmap.fr"}, 443);
+
+    private static final int PARALLEL_REQUESTS_LIMIT = 8;
+    private static final String PROTOCOL = "https";
+    private static final int ZOOM_LEVEL_MAX = 18;
+    private static final int ZOOM_LEVEL_MIN = 0;
+    private static final String NAME = "Humanitarian";
 
     private HumanitarianTileSource(String[] hostNames, int port) {
-        super(hostNames, port, 8, "https", 18, 0, "Humanitarian", "/hot/");
+        super(hostNames, port, (byte) ZOOM_LEVEL_MIN, (byte) ZOOM_LEVEL_MAX, PARALLEL_REQUESTS_LIMIT);
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public int getParallelRequestsLimit() {
+        return PARALLEL_REQUESTS_LIMIT;
+    }
+
+    @Override
+    protected String buildTileUrlPath(Tile tile) {
+        return "/hot/" + tile.zoomLevel + '/' + tile.tileX + '/' + tile.tileY + ".png";
     }
 }

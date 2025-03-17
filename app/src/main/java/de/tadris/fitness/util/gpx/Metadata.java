@@ -19,35 +19,16 @@
 
 package de.tadris.fitness.util.gpx;
 
-public class Metadata {
+public class Metadata extends BaseMetadata{
 
-    private String name;
-    private String desc;
     private String time;
 
     public Metadata() {
     }
 
     public Metadata(String name, String desc, String time) {
-        this.name = name;
-        this.desc = desc;
+        super(name,desc);
         this.time = time;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
     }
 
     public String getTime() {

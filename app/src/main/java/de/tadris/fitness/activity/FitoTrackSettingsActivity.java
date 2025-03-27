@@ -43,6 +43,13 @@ import de.tadris.fitness.util.DialogUtils;
 public abstract class FitoTrackSettingsActivity extends PreferenceActivity {
 
     @Override
+    protected boolean isValidFragment(String fragmentName) {
+        // Only allow the fragments you actually use in this Activity
+        return MySettingsFragment.class.getName().equals(fragmentName)
+                || AnotherSettingsFragment.class.getName().equals(fragmentName);
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setTheme(Instance.getInstance(this).themes.getDefaultTheme());
         super.onCreate(savedInstanceState);

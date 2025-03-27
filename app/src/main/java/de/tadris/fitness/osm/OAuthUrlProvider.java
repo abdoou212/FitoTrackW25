@@ -26,8 +26,14 @@ import oauth.signpost.basic.DefaultOAuthProvider;
 
 class OAuthUrlProvider {
 
-    static private final String CONSUMER_KEY= "jFL9grFmAo5ZS720YDDRXdSOb7F0IZQf9lnY1PHq";
-    static private final String CONSUMER_SECRET= "oH969vYW60fZLco6E09UQl3uFXqjl4siQbOL0q9q";
+    static private final String CONSUMER_KEY    = System.getenv("OSM_CONSUMER_KEY");
+    static private final String CONSUMER_SECRET = System.getenv("OSM_CONSUMER_SECRET");
+
+    static {
+        if (CONSUMER_KEY == null || CONSUMER_SECRET == null) {
+            throw new IllegalStateException("Missing OAuth credentials in environment variables");
+        }
+    }
 
     static OAuthConsumer getDefaultConsumer(){
         return new DefaultOAuthConsumer(CONSUMER_KEY, CONSUMER_SECRET);

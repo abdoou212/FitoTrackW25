@@ -40,8 +40,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activity.VoiceAnnouncementsSettingsActivity" />
-        <activity android:name=".activity.SettingsActivity" />
+        <activity android:name=".activity.VoiceAnnouncementsSettingsActivity"
+                  android:exported="false"/>
+        <activity android:name=".activity.SettingsActivity"
+                  android:exported="false"/>
         <activity android:name=".activity.EnterWorkoutActivity"/>
         <activity
             android:name=".activity.ShowWorkoutMapActivity"

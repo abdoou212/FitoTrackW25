@@ -21,11 +21,27 @@ package de.tadris.fitness.map.tilesource;
 
 import org.mapsforge.core.model.Tile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.util.Properties;
 
 public class ThunderforestTileSource extends FitoTrackTileSource {
 
-    private static final String API_KEY = "87b07337e42c405db6d8d39b1c0c179e";
+    private static final String API_KEY = loadApiKey();
+
+    private static String loadApiKey() {
+        Properties properties = new Properties();
+        try (InputStream input = ThunderforestTileSource.class.getClassLoader().getResourceAsStream("config.properties")) {
+            if (input == null) {
+                throw new IllegalStateException("Missing config.properties file. Please add it as per README instructions.");
+            }
+            properties.load(input);
+            return properties.getProperty("THUNDERFOREST_API_KEY");
+        } catch (IOException e) {
+            throw new RuntimeException("Error loading API key from config file", e);
+        }
+    }
 
     public static final ThunderforestTileSource OUTDOORS = new ThunderforestTileSource("outdoors", "Outdoor");
     public static final ThunderforestTileSource CYCLE_MAP = new ThunderforestTileSource("cycle", "Cycle Map");

@@ -48,9 +48,10 @@ public abstract class FitoTrackActivity extends Activity {
         return value.data;
     }
 
-    private void handleException(Exception e) {
-        DialogUtils.showErrorDialog(this, e, R.string.error_title, R.string.error_message);
+    protected void showErrorDialog(Exception e, @StringRes int title, @StringRes int message) {
+        DialogUtils.showErrorDialog(this, e, title, message);
     }
+    
 
     protected void requestStoragePermissions() {
         if (!hasStoragePermission()) {

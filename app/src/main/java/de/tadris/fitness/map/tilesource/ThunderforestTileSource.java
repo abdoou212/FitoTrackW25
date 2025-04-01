@@ -24,9 +24,9 @@ import org.mapsforge.core.model.Tile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.util.Properties;
+import java.net.URL;
 
-public class ThunderforestTileSource extends FitoTrackTileSource {
+public class ThunderforestTileSource extends FitoTrackTileSource{
 
     private static final String API_KEY = loadApiKey();
 
@@ -45,8 +45,6 @@ public class ThunderforestTileSource extends FitoTrackTileSource {
 
     public static final ThunderforestTileSource OUTDOORS = new ThunderforestTileSource("outdoors", "Outdoor");
     public static final ThunderforestTileSource CYCLE_MAP = new ThunderforestTileSource("cycle", "Cycle Map");
-    private static final int PARALLEL_REQUESTS_LIMIT = 8;
-    private static final String PROTOCOL = "https";
     private static final int ZOOM_LEVEL_MAX = 19;
     private static final int ZOOM_LEVEL_MIN = 0;
 
@@ -54,23 +52,29 @@ public class ThunderforestTileSource extends FitoTrackTileSource {
     private final String name;
 
     private ThunderforestTileSource(String mapName, String name) {
-        super(new String[]{"tile.thunderforest.com"}, 443, (byte) ZOOM_LEVEL_MIN, (byte) ZOOM_LEVEL_MAX, PARALLEL_REQUESTS_LIMIT);
+        super(new String[]{"tile.thunderforest.com"}, 443);
         this.mapName = mapName;
         this.name = name;
     }
 
     @Override
-    public int getParallelRequestsLimit() {
-        return PARALLEL_REQUESTS_LIMIT;
+    public URL getTileUrl(Tile tile) throws MalformedURLException {
+
+        return new URL(TileConstantManager.getInstance().getHTTPS_PROTOCOL(), getHostName(), this.port, "/" + mapName + "/" + tile.zoomLevel + '/' + tile.tileX + '/' + tile.tileY + ".png?apikey=" + API_KEY);
+    }
+
+    @Override
+    public byte getZoomLevelMax() {
+        return ZOOM_LEVEL_MAX;
+    }
+
+    @Override
+    public byte getZoomLevelMin() {
+        return ZOOM_LEVEL_MIN;
     }
 
     @Override
     public String getName() {
         return name;
-    }
-
-    @Override
-    protected String buildTileUrlPath(Tile tile) {
-        return "/" + mapName + "/" + tile.zoomLevel + '/' + tile.tileX + '/' + tile.tileY + ".png?apikey=" + API_KEY;
     }
 }

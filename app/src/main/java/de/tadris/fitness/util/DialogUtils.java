@@ -24,6 +24,7 @@ import android.content.Context;
 import androidx.appcompat.app.AlertDialog;
 import androidx.annotation.StringRes;
 
+import androidx.annotation.StringRes;
 import de.tadris.fitness.R;
 
 public class DialogUtils {
@@ -43,6 +44,7 @@ public class DialogUtils {
                 .setPositiveButton(android.R.string.ok, null)
                 .create()
                 .show();
+
     }
 
     public interface WorkoutDeleter{

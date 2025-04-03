@@ -84,7 +84,6 @@ public class OAuthAuthentication {
                     dialogController.cancel();
                 });
             } catch (OAuthException e) {
-                e.printStackTrace();
                 handler.post(() -> {
                     dialogController.cancel();
                     listener.authenticationFailed();

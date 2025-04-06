@@ -21,17 +21,30 @@ package de.tadris.fitness.map.tilesource;
 
 import org.mapsforge.core.model.Tile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 public class ThunderforestTileSource extends FitoTrackTileSource{
 
-    private static final String API_KEY = "87b07337e42c405db6d8d39b1c0c179e";
+    private static final String API_KEY = loadApiKey();
+
+    private static String loadApiKey() {
+        Properties properties = new Properties();
+        try (InputStream input = ThunderforestTileSource.class.getClassLoader().getResourceAsStream("config.properties")) {
+            if (input == null) {
+                throw new IllegalStateException("Missing config.properties file. Please add it as per README instructions.");
+            }
+            properties.load(input);
+            return properties.getProperty("THUNDERFOREST_API_KEY");
+        } catch (IOException e) {
+            throw new RuntimeException("Error loading API key from config file", e);
+        }
+    }
 
     public static final ThunderforestTileSource OUTDOORS = new ThunderforestTileSource("outdoors", "Outdoor");
     public static final ThunderforestTileSource CYCLE_MAP = new ThunderforestTileSource("cycle", "Cycle Map");
-    private static final int PARALLEL_REQUESTS_LIMIT = 8;
-    private static final String PROTOCOL = "https";
     private static final int ZOOM_LEVEL_MAX = 19;
     private static final int ZOOM_LEVEL_MIN = 0;
 
@@ -45,14 +58,9 @@ public class ThunderforestTileSource extends FitoTrackTileSource{
     }
 
     @Override
-    public int getParallelRequestsLimit() {
-        return PARALLEL_REQUESTS_LIMIT;
-    }
-
-    @Override
     public URL getTileUrl(Tile tile) throws MalformedURLException {
 
-        return new URL(PROTOCOL, getHostName(), this.port, "/" + mapName + "/" + tile.zoomLevel + '/' + tile.tileX + '/' + tile.tileY + ".png?apikey=" + API_KEY);
+        return new URL(TileConstantManager.getInstance().getHTTPS_PROTOCOL(), getHostName(), this.port, "/" + mapName + "/" + tile.zoomLevel + '/' + tile.tileX + '/' + tile.tileY + ".png?apikey=" + API_KEY);
     }
 
     @Override

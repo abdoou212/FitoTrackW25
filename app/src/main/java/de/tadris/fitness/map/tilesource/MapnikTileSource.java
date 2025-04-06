@@ -19,14 +19,34 @@
 
 package de.tadris.fitness.map.tilesource;
 
-public class MapnikTileSource extends BaseTileSource {
+import org.mapsforge.core.model.Tile;
 
-    public static final MapnikTileSource INSTANCE = new MapnikTileSource(
-            new String[]{"a.tile.openstreetmap.org", "b.tile.openstreetmap.org", "c.tile.openstreetmap.org"},
-            443
-    );
+import java.net.MalformedURLException;
+import java.net.URL;
+
+public class MapnikTileSource extends FitoTrackTileSource {
+
+    public static final MapnikTileSource INSTANCE = new MapnikTileSource(new String[]{
+            "a.tile.openstreetmap.org", "b.tile.openstreetmap.org", "c.tile.openstreetmap.org"}, 443);
+    private static final int ZOOM_LEVEL_MAX = 19;
+    private static final int ZOOM_LEVEL_MIN = 0;
 
     private MapnikTileSource(String[] hostNames, int port) {
-        super(hostNames, port, 8, "https", 19, 0, "OSM Mapnik", "/");
+        super(hostNames, port);
+    }
+
+    @Override
+    public String getName() {
+        return TileConstantManager.getInstance().getOSM_MAPNIK_NAME();
+    }
+
+    @Override
+    public byte getZoomLevelMax() {
+        return ZOOM_LEVEL_MAX;
+    }
+
+    @Override
+    public byte getZoomLevelMin() {
+        return ZOOM_LEVEL_MIN;
     }
 }

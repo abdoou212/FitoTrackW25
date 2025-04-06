@@ -181,6 +181,8 @@ public class RecordWorkoutActivity extends FitoTrackActivity implements Location
                     mHandler.post(this::updateDescription);
                 }
             }catch (InterruptedException e){
+                // Restore the interrupt status to ensure the caller is aware of the interruption.
+                Thread.currentThread().interrupt();
                 e.printStackTrace();
             }
         }).start();
@@ -256,6 +258,12 @@ public class RecordWorkoutActivity extends FitoTrackActivity implements Location
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 10);
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 10);
         }
+
+        else {
+            startListener();  
+        }
+
+        
     }
 
     private boolean hasPermission() {
@@ -266,6 +274,14 @@ public class RecordWorkoutActivity extends FitoTrackActivity implements Location
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (hasPermission()) {
             startListener();
+        }
+
+        else {
+            new AlertDialog.Builder(this)
+                .setTitle("Permission Denied")
+                .setMessage("GPS permission is required to record the workout.")
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .show();
         }
     }
 

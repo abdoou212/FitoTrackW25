@@ -34,7 +34,7 @@ import de.tadris.fitness.Instance;
 import de.tadris.fitness.R;
 import de.tadris.fitness.util.DialogUtils;
 
-abstract public class FitoTrackActivity extends Activity {
+public abstract class FitoTrackActivity extends Activity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,9 +48,10 @@ abstract public class FitoTrackActivity extends Activity {
         return value.data;
     }
 
-    private void handleException(Exception e) {
-        DialogUtils.showErrorDialog(this, e, R.string.error_title, R.string.error_message);
+    protected void showErrorDialog(Exception e, @StringRes int title, @StringRes int message) {
+        DialogUtils.showErrorDialog(this, e, title, message);
     }
+    
 
     protected void requestStoragePermissions() {
         if (!hasStoragePermission()) {

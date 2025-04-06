@@ -122,7 +122,7 @@ public class WorkoutRecorder implements LocationListener.LocationChangeListener 
                     Thread.sleep(5000);
                 }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Log.e("WorkoutWatchdog", "Watchdog thread was interrupted: " + e.getMessage());
             }
         }, "WorkoutWatchdog").start();
     }

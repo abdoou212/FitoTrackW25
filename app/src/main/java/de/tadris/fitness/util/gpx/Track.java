@@ -23,11 +23,9 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 
 import java.util.List;
 
-public class Track {
+public class Track extends BaseMetadata {
 
-    String name;
     String cmt;
-    String desc;
     String src;
     int number;
     String type;
@@ -38,21 +36,12 @@ public class Track {
     public Track(){}
 
     public Track(String name, String cmt, String desc, String src, int number, String type, List<TrackSegment> trkseg) {
-        this.name = name;
+        super(name,desc);
         this.cmt = cmt;
-        this.desc = desc;
         this.src = src;
         this.number = number;
         this.type = type;
         this.trkseg = trkseg;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getCmt() {
@@ -61,14 +50,6 @@ public class Track {
 
     public void setCmt(String cmt) {
         this.cmt = cmt;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
     }
 
     public String getSrc() {

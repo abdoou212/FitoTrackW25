@@ -98,6 +98,14 @@ public class SettingsActivity extends FitoTrackSettingsActivity {
 
     private VoiceAnnouncements voiceAnnouncements;
 
+    private boolean checkAndRequestPermissions() {
+        if (!hasPermission()) {
+            requestPermissions();
+            return false;
+        }
+        return true;
+    }
+
     private void checkTTSandShowConfig() {
         voiceAnnouncements = new VoiceAnnouncements(this, available -> {
             if (available) {
@@ -117,12 +125,8 @@ public class SettingsActivity extends FitoTrackSettingsActivity {
     }
 
     private void showExportDialog() {
-        showDialog(R.string.exportData, R.string.exportDataSummary, R.string.backup, this::exportBackup);
-    }
 
-    private void showDialog(int titleRes, int messageRes, int positiveButtonRes, Runnable positiveAction) {
-        if (!hasPermission()) {
-            requestPermissions();
+        if (!checkAndRequestPermissions()) {
             return;
         }
         new AlertDialog.Builder(this)
@@ -154,13 +158,21 @@ public class SettingsActivity extends FitoTrackSettingsActivity {
                     FileUtils.saveOrShareFile(this, uri, "ftb");
                 });
             }catch (Exception e){
-                handleBackupError(e, dialogController, R.string.errorExportFailed);
+
+                handleError(e, dialogController);
             }
         }).start();
     }
 
     private void showImportDialog() {
-        showDialog(R.string.importBackup, R.string.importBackupMessage, R.string.restore, this::importBackup);
+        if (!checkAndRequestPermissions()) {
+            return;
+        }
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.importBackup)
+                .setMessage(R.string.importBackupMessage)
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.restore, (dialog, which) -> importBackup()).create().show();
     }
 
     private void requestPermissions() {
@@ -180,7 +192,9 @@ public class SettingsActivity extends FitoTrackSettingsActivity {
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         try {
             startActivityForResult(Intent.createChooser(intent, getString(R.string.chooseBackupFile)), FILE_SELECT_CODE);
-        } catch (android.content.ActivityNotFoundException ignored) { }
+        } catch (android.content.ActivityNotFoundException ignored) {
+            Toast.makeText(this, "File manager not found", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -204,47 +218,46 @@ public class SettingsActivity extends FitoTrackSettingsActivity {
 
                 mHandler.post(dialogController::cancel);
             }catch (Exception e){
-                handleBackupError(e, dialogController, R.string.errorExportFailed);
+                handleError(e, dialogController);
             }
         }).start();
     }
 
     private void showWeightPicker() {
-        UnitUtils.setUnit(this); // Maybe the user changed unit system
+        UnitUtils.setUnit(this); // Ensure the correct unit system
 
-        final AlertDialog.Builder d = new AlertDialog.Builder(this);
-        final SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(this);
-        d.setTitle(getString(R.string.pref_weight));
-        View v= getLayoutInflater().inflate(R.layout.dialog_weight_picker, null);
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        View v = getLayoutInflater().inflate(R.layout.dialog_weight_picker, null);
         NumberPicker np = v.findViewById(R.id.weightPicker);
+
         np.setMaxValue((int) UnitUtils.CHOSEN_SYSTEM.getWeightFromKilogram(150));
         np.setMinValue((int) UnitUtils.CHOSEN_SYSTEM.getWeightFromKilogram(20));
         np.setFormatter(value -> value + " " + UnitUtils.CHOSEN_SYSTEM.getWeightUnit());
+
         final String preferenceVariable = "weight";
-        np.setValue((int)Math.round(UnitUtils.CHOSEN_SYSTEM.getWeightFromKilogram(preferences.getInt(preferenceVariable, 80))));
+        np.setValue((int) Math.round(UnitUtils.CHOSEN_SYSTEM.getWeightFromKilogram(preferences.getInt(preferenceVariable, 80))));
         np.setWrapSelectorWheel(false);
 
-        d.setView(v);
-
-        d.setNegativeButton(R.string.cancel, null);
-        d.setPositiveButton(R.string.okay, (dialog, which) -> {
-            int unitValue= np.getValue();
-            int kilograms= (int)Math.round(UnitUtils.CHOSEN_SYSTEM.getKilogramFromUnit(unitValue));
+        showNumberPickerDialog(getString(R.string.pref_weight), v, (dialog, which) -> {
+            int unitValue = np.getValue();
+            int kilograms = (int) Math.round(UnitUtils.CHOSEN_SYSTEM.getKilogramFromUnit(unitValue));
             preferences.edit().putInt(preferenceVariable, kilograms).apply();
         });
-
-        d.create().show();
     }
 
     /**
-     * Set up the {@link android.app.ActionBar}, if the API is available.
+     * Handles errors by logging the exception, canceling the progress dialog,
+     * and displaying an error message to the user.
+     *
+     * @param e The exception that was caught.
+     * @param dialogController The progress dialog controller to be canceled.
      */
-    private void setupActionBar() {
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            // Show the Up button in the action bar.
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+    private void handleError(Exception e, ProgressDialogController dialogController) {
+        e.printStackTrace();
+        mHandler.post(() -> {
+            dialogController.cancel();
+            showErrorDialog(e, R.string.error, R.string.errorExportFailed);
+        });
     }
 
 }

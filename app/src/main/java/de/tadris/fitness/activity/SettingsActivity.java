@@ -52,7 +52,7 @@ public class SettingsActivity extends FitoTrackSettingsActivity {
     private final Handler mHandler = new Handler();
 
         private void handleBackupError(Exception e, ProgressDialogController dialogController, int errorMessage) {
-        e.printStackTrace();
+        Log.e("BackupError", "An error occurred during backup", e);
         mHandler.post(() -> {
             dialogController.cancel();
             showErrorDialog(e, R.string.error, errorMessage);

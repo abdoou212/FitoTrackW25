@@ -28,6 +28,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.util.Log;
 
 import androidx.core.content.FileProvider;
 
@@ -198,7 +199,7 @@ public class ShowWorkoutActivity extends WorkoutActivity implements DialogUtils.
                 dialogController.cancel();
                 mHandler.post(() -> FileUtils.saveOrShareFile(this, uri, "gpx"));
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e("ShowWorkoutActivity", "GPX export failed", e);
                 mHandler.post(() -> showErrorDialog(e, R.string.error, R.string.errorGpxExportFailed));
             }
         }).start();

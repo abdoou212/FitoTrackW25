@@ -19,12 +19,7 @@
 
 package de.tadris.fitness.map.tilesource;
 
-import org.mapsforge.core.model.Tile;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-
-public class HumanitarianTileSource extends FitoTrackTileSource {
+public class HumanitarianTileSource extends BaseTileSource {
 
     public static final HumanitarianTileSource INSTANCE = new HumanitarianTileSource(new String[]{"tile-a.openstreetmap.fr", "tile-b.openstreetmap.fr", "tile-c.openstreetmap.fr"}, 443);
     private static final int ZOOM_LEVEL_MAX = 18;

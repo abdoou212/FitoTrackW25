@@ -41,8 +41,10 @@ import de.tadris.fitness.Instance;
 import de.tadris.fitness.R;
 import de.tadris.fitness.util.DialogUtils;
 import de.tadris.fitness.util.unit.UnitUtils;
+import de.tadris.fitness.util.DialogUtils;
 
 public abstract class FitoTrackSettingsActivity extends PreferenceActivity {
+
 
     public void showNumberPickerDialog(String title, View view, DialogInterface.OnClickListener onConfirm) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
@@ -58,6 +60,7 @@ public abstract class FitoTrackSettingsActivity extends PreferenceActivity {
         setTheme(Instance.getInstance(this).themes.getDefaultTheme());
         super.onCreate(savedInstanceState);
     }
+
 
     protected void showErrorDialog(Exception e, @StringRes int title, @StringRes int message) {
         DialogUtils.showErrorDialog(this, e, title, message);

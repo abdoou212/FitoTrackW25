@@ -51,6 +51,14 @@ public class SettingsActivity extends FitoTrackSettingsActivity {
 
     private final Handler mHandler = new Handler();
 
+        private void handleBackupError(Exception e, ProgressDialogController dialogController, int errorMessage) {
+        Log.e("BackupError", "An error occurred during backup", e);
+        mHandler.post(() -> {
+            dialogController.cancel();
+            showErrorDialog(e, R.string.error, errorMessage);
+        });
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,14 +125,17 @@ public class SettingsActivity extends FitoTrackSettingsActivity {
     }
 
     private void showExportDialog() {
+
         if (!checkAndRequestPermissions()) {
             return;
         }
         new AlertDialog.Builder(this)
-                .setTitle(R.string.exportData)
-                .setMessage(R.string.exportDataSummary)
+                .setTitle(titleRes)
+                .setMessage(messageRes)
                 .setNegativeButton(R.string.cancel, null)
-                .setPositiveButton(R.string.backup, (dialog, which) -> exportBackup()).create().show();
+                .setPositiveButton(positiveButtonRes, (dialog, which) -> positiveAction.run())
+                .create()
+                .show();
     }
 
     private void exportBackup(){
@@ -147,6 +158,7 @@ public class SettingsActivity extends FitoTrackSettingsActivity {
                     FileUtils.saveOrShareFile(this, uri, "ftb");
                 });
             }catch (Exception e){
+
                 handleError(e, dialogController);
             }
         }).start();
